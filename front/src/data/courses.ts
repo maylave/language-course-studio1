@@ -1,77 +1,58 @@
-export interface CourseItem {
+export interface Course {
   id: string
   title: string
   description: string
-  iconSrc: string
-  xp: number
+  iconEmoji: string
+  xp?: number
+  badge?: string
   levels: string
   students: number
 }
 
-const flag = (code: string) => `https://flagcdn.com/w80/${code}.png`
-
-export const courses: CourseItem[] = [
+export const courses: Course[] = [
   {
     id: 'en',
     title: 'Английский',
     description: 'От разговорного сленга до подготовки к IELTS и собеседованиям.',
-    iconSrc: flag('gb'),
+    iconEmoji: '🇬🇧',
     xp: 200,
     levels: 'A1 → C1',
-    students: 140_000,
-  },
-  {
-    id: 'de',
-    title: 'Немецкий',
-    description: 'Грамматика без боли: артикли, падежи и деловая переписка.',
-    iconSrc: flag('de'),
-    xp: 180,
-    levels: 'A1 → B2',
-    students: 62_000,
+    students: 140000,
   },
   {
     id: 'es',
     title: 'Испанский',
-    description: 'Живая речь, путешествия и основа для работы с Латинской Америкой.',
-    iconSrc: flag('es'),
-    xp: 160,
+    description: 'Живой испанский язык для путешествий по Испании и Латинской Америке.',
+    iconEmoji: '🇪🇸',
+    xp: 180,
     levels: 'A1 → B2',
-    students: 88_000,
+    students: 65000,
+  },
+  {
+    id: 'de',
+    title: 'Немецкий',
+    description: 'Четкая грамматика без стресса, подготовка к Goethe-Zertifikat.',
+    iconEmoji: '🇩🇪',
+    xp: 250,
+    levels: 'A1 → B2',
+    students: 42000,
+  },
+  {
+    id: 'zh',
+    title: 'Китайский',
+    description: 'Визуальная мнемоника иероглифов, пиньинь и тоновая постановка речи.',
+    iconEmoji: '🇨🇳',
+    badge: 'ТОП ХИТ',
+    levels: 'HSK 1 → 4',
+    students: 28000,
   },
   {
     id: 'fr',
     title: 'Французский',
-    description: 'Произношение, быт и подготовка к экзаменам DELF.',
-    iconSrc: flag('fr'),
-    xp: 170,
+    description: 'Мелодика произношения, связывание звуков и повседневные речевые обороты.',
+    iconEmoji: '🇫🇷',
+    xp: 190,
     levels: 'A1 → B2',
-    students: 47_000,
-  },
-  {
-    id: 'ja',
-    title: 'Японский',
-    description: 'Хирагана, катакана, базовые кандзи и первые диалоги.',
-    iconSrc: flag('jp'),
-    xp: 250,
-    levels: 'N5 → N3',
-    students: 53_000,
-  },
-  {
-    id: 'zh',
-    title: 'Китайский',
-    description: 'Тоны, иероглифы и разговорный минимум для работы и поездок.',
-    iconSrc: flag('cn'),
-    xp: 240,
-    levels: 'HSK 1 → 4',
-    students: 39_000,
-  },
-  {
-    id: 'zh',
-    title: 'Китайский',
-    description: 'Тоны, иероглифы и разговорный минимум для работы и поездок.',
-    iconSrc: flag('cn'),
-    xp: 240,
-    levels: 'HSK 1 → 4',
-    students: 39_000,
+    students: 38000,
   },
 ]

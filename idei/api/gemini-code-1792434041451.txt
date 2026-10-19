@@ -1,0 +1,29 @@
+<!-- src/components/hero/Hero.vue -->
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import GamificationWidget from './GamificationWidget.vue'
+import { gamificationApi } from '@/api'
+import type { StudentProgress } from '@/types/gamification'
+
+const progress = ref<StudentProgress | null>(null)
+
+onMounted(async () => {
+  progress.value = await gamificationApi.getStudentProgress()
+})
+</script>
+
+<template>
+  <!-- В правой колонке Hero передаем реактивные данные из API -->
+  <div class="lg:col-span-5">
+    <GamificationWidget
+      v-if="progress"
+      :streak="progress.streakDays"
+      :gems="progress.gems"
+      :earned-xp="progress.earnedXpToday"
+      :level="progress.level"
+      :league="progress.leagueName"
+      :current-xp="progress.xp"
+      :max-xp="progress.maxDailyXp"
+    />
+  </div>
+</template>

@@ -1,0 +1,22 @@
+<!-- src/components/cta/CtaBanner.vue -->
+<script setup lang="ts">
+import { ref } from 'vue'
+import { authApi } from '@/api'
+
+const email = ref('')
+const isSubmitting = ref(false)
+
+const handleStartQuest = async () => {
+  if (!email.value) return
+  isSubmitting.value = true
+  try {
+    const response = await authApi.register(email.value)
+    localStorage.setItem('sq_token', response.token)
+    // Перенаправление на тест уровня (Процесс 2.1)
+  } catch (error) {
+    console.error('Ошибка регистрации:', error)
+  } finally {
+    isSubmitting.value = false
+  }
+}
+</script>

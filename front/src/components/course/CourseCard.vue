@@ -6,23 +6,23 @@ const props = withDefaults(
   defineProps<{
     title: string
     description: string
-    /** Ссылка на картинку флага/иконки курса */
+    iconEmoji?: string
     iconSrc?: string
     iconAlt?: string
-    /** Награда за курс; 0 или не задано — бейдж не показывается */
     xp?: number
-    /** Например: 'A1 → C1' */
+    badge?: string
     levels?: string
-    /** Число учеников: 140000 → '140k' (строка выводится как есть) */
     students?: number | string
     buttonText?: string
     loading?: boolean
     disabled?: boolean
   }>(),
   {
+    iconEmoji: '',
     iconSrc: undefined,
     iconAlt: '',
     xp: 0,
+    badge: '',
     levels: undefined,
     students: undefined,
     buttonText: 'Выбрать курс',
@@ -47,56 +47,71 @@ const studentsLabel = computed(() => {
 
 <template>
   <article
-    class="flex flex-col gap-4 p-6 rounded-[2rem] bg-surface-container-lowest shadow-[0_8px_24px_rgba(79,70,229,0.08)]"
+    class="flex flex-col h-full p-5 rounded-3xl bg-surface-container-lowest shadow-[0_6px_0_0_#dce9ff] hover:-translate-y-1 transition-all group"
   >
-    <!-- Иконка + XP -->
-    <div class="flex items-start justify-between gap-3">
-      <div
-        class="w-14 h-14 rounded-2xl bg-surface-container-low flex items-center justify-center overflow-hidden"
-      >
-        <slot name="icon">
-          <img v-if="iconSrc" :src="iconSrc" :alt="iconAlt" class="w-8 h-8 object-contain" />
-        </slot>
+    <!-- Верхняя часть с flex-1 будет выталкивать подвал вниз -->
+    <div class="flex-1 flex flex-col">
+      <!-- Иконка + XP / Badge -->
+      <div class="flex items-center justify-between mb-4">
+        <span v-if="iconEmoji" class="text-4xl p-2 rounded-2xl bg-surface-container-low shadow-sm">
+          {{ iconEmoji }}
+        </span>
+        <div
+          v-else-if="iconSrc"
+          class="w-14 h-14 rounded-2xl bg-surface-container-low flex items-center justify-center overflow-hidden"
+        >
+          <img :src="iconSrc" :alt="iconAlt" class="w-8 h-8 object-contain" />
+        </div>
+
+        <span
+          v-if="badge"
+          class="px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 font-label-sm text-label-sm font-extrabold uppercase"
+        >
+          {{ badge }}
+        </span>
+        <span
+          v-else-if="xp > 0"
+          class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-label-sm text-label-sm font-extrabold"
+        >
+          +{{ xp }} XP
+        </span>
       </div>
 
-      <span
-        v-if="xp > 0"
-        class="px-3 py-1 rounded-full bg-[#dcfce7] text-[#15803d] text-xs font-extrabold tracking-wide"
+      <!-- Текст -->
+      <h3 class="font-headline-md text-headline-md text-on-surface">{{ title }}</h3>
+      <p class="font-body-sm text-body-sm text-on-surface-variant mt-2 mb-4">{{ description }}</p>
+    </div>
+
+    <!-- Нижняя часть прижата к низу благодаря flex-1 у верхнего блока -->
+    <div class="mt-auto">
+      <!-- Мета-информация -->
+      <div
+        v-if="levels || studentsLabel"
+        class="flex items-center justify-between gap-2 text-[13px] text-on-surface-variant pt-4 pb-4 border-t border-surface-container-high/60"
       >
-        +{{ xp }} XP
-      </span>
-    </div>
+        <!-- whitespace-nowrap запрещает перенос текста на новую строку -->
+        <span v-if="levels" class="whitespace-nowrap"
+          >Уровни: <strong>{{ levels }}</strong></span
+        >
+        <span v-if="studentsLabel" class="whitespace-nowrap text-right"
+          >{{ studentsLabel }} учеников</span
+        >
+      </div>
 
-    <!-- Текст -->
-    <div class="flex flex-col gap-2">
-      <h3 class="text-2xl font-extrabold tracking-tight text-on-surface">{{ title }}</h3>
-      <p class="text-base font-medium text-on-surface-variant">{{ description }}</p>
-    </div>
-
-    <!-- Мета-информация -->
-    <div
-      v-if="levels || studentsLabel"
-      class="flex items-center justify-between gap-3 pt-4 mt-auto border-t border-surface-container-highest text-xs font-bold text-on-surface-variant"
-    >
-      <span v-if="levels">Уровни: {{ levels }}</span>
-      <span v-if="studentsLabel">{{ studentsLabel }} учеников</span>
-    </div>
-
-    <!-- Дополнительный контент (прогресс, теги и т. п.) -->
-    <slot />
-
-    <div class="[&>button]:w-full">
-      <AppButton
-        bg-color="#22c55e"
-        hover-color="#16a34a"
-        border-color="#15803d"
-        shadow-color="rgba(34,197,94,0.35)"
-        :loading="loading"
-        :disabled="disabled"
-        @click="emit('select')"
-      >
-        {{ buttonText }}
-      </AppButton>
+      <div class="w-full">
+        <AppButton
+          class="w-full"
+          bg-color="#22c55e"
+          hover-color="#16a34a"
+          border-color="#15803d"
+          shadow-color="rgba(34,197,94,0.35)"
+          :loading="loading"
+          :disabled="disabled"
+          @click="emit('select')"
+        >
+          {{ buttonText }}
+        </AppButton>
+      </div>
     </div>
   </article>
 </template>
