@@ -125,6 +125,7 @@ const router = createRouter({
 })
 
 // Глобальная защита маршрутов
+// Глобальная защита маршрутов
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
   const isLoggedIn = authStore.isLoggedIn
@@ -141,8 +142,12 @@ router.beforeEach((to, from, next) => {
   }
 
   if (to.meta.roles && Array.isArray(to.meta.roles)) {
+    // 👇 НОВОЕ УСЛОВИЕ: Админу можно всё (Superuser)
+    if (userRole === 'admin') {
+      return next() // Пропускаем без проверок
+    }
+
     if (!userRole || !to.meta.roles.includes(userRole)) {
-      if (userRole === 'admin') return next('/admin/content')
       if (userRole === 'teacher') return next('/teacher/grading')
       if (userRole === 'student') return next('/dashboard')
       return next('/403')
@@ -151,5 +156,4 @@ router.beforeEach((to, from, next) => {
 
   next()
 })
-
 export default router

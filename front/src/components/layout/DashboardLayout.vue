@@ -37,8 +37,16 @@ const teacherLinks: SidebarLink[] = [
 ]
 
 const currentLinks = computed(() => {
-  if (currentRole.value === 'admin') return adminLinks
-  if (currentRole.value === 'teacher') return teacherLinks
+  if (currentRole.value === 'admin') {
+    // Если это админ, он видит абсолютно все разделы платформы
+    return [...adminLinks, ...studentLinks, ...teacherLinks]
+  }
+
+  if (currentRole.value === 'teacher') {
+    return teacherLinks
+  }
+
+  // Для обычного студента
   return studentLinks
 })
 
