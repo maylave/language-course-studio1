@@ -1,10 +1,20 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useAuthStore } from '@/stores/auth'
+
 import AppSidebar, { type SidebarLink } from '@/components/layout/AppSidebar.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 
-// Здесь в реальном приложении вы получите роль из вашего auth-стейта (Pinia/Vuex)
-const userRole = ref<'admin' | 'student' | 'teacher'>('admin')
+const router = useRouter()
+const authStore = useAuthStore()
+
+// Извлекаем текущего пользователя из глобального стейта
+const { user, userRoleLabel } = storeToRefs(authStore)
+
+// Безопасное определение роли (если данных нет, ставим student по умолчанию)
+const currentRole = computed(() => user.value?.role || 'student')
 
 const adminLinks: SidebarLink[] = [
   { name: 'Редактор контента', path: '/admin/content', icon: 'edit_note' },
@@ -27,16 +37,16 @@ const teacherLinks: SidebarLink[] = [
 ]
 
 const currentLinks = computed(() => {
-  if (userRole.value === 'admin') return adminLinks
-  if (userRole.value === 'teacher') return teacherLinks
+  if (currentRole.value === 'admin') return adminLinks
+  if (currentRole.value === 'teacher') return teacherLinks
   return studentLinks
 })
 
 const bottomLinks: SidebarLink[] = [{ name: 'Настройки системы', path: '/settings', icon: 'tune' }]
 
 const handleLogout = () => {
-  console.log('Выход из системы')
-  // Очистка localStorage и redirect на /login
+  authStore.logout()
+  router.push('/login')
 }
 </script>
 
@@ -44,9 +54,9 @@ const handleLogout = () => {
   <div class="min-h-screen bg-surface">
     <AppSidebar
       :portal-name="
-        userRole === 'admin'
+        currentRole === 'admin'
           ? 'ADMIN PORTAL'
-          : userRole === 'teacher'
+          : currentRole === 'teacher'
             ? 'TEACHER PORTAL'
             : 'STUDENT PORTAL'
       "
@@ -56,24 +66,23 @@ const handleLogout = () => {
     />
 
     <div class="pl-72">
-      <AppHeader
-        user-name="Александр В."
-        :user-role-label="userRole === 'admin' ? 'Главный администратор' : 'Ученик'"
-      >
-        <template #role-badge v-if="userRole === 'admin'">
+      <!-- Передаем реальные данные пользователя из store -->
+      <AppHeader :user-name="user?.name || 'Гость'" :user-role-label="userRoleLabel">
+        <template #role-badge v-if="currentRole === 'admin'">
           <div
             class="hidden sm:flex items-center gap-1 bg-primary-fixed px-4 py-1.5 rounded-full shadow-[0_2px_0_0_#c2c1ff]"
           >
             <span class="material-symbols-outlined text-primary text-[18px]">shield_person</span>
             <span
               class="font-label-sm text-label-sm text-on-primary-fixed font-bold uppercase tracking-wider"
-              >Режим администратора</span
             >
+              Режим администратора
+            </span>
           </div>
         </template>
       </AppHeader>
 
-      <!-- Главная рабочая область контента -->
+      <!-- Главная рабочая область контента, сюда подставляются страницы из роутера -->
       <main class="relative pt-20 w-full min-h-screen px-6 py-6">
         <slot></slot>
       </main>
