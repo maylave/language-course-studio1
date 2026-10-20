@@ -36,13 +36,23 @@ const router = createRouter({
     {
       path: '/admin/content',
       name: 'admin-content',
-
       component: () => import('@/views/ContentEditorView.vue'),
     },
     {
       path: '/profile',
       name: 'profile',
       component: () => import('@/views/ProfileView.vue'),
+    },
+    {
+      path: '/403',
+      name: 'forbidden',
+      component: () => import('@/views/403.vue'),
+    },
+    // Страница 404 (должна быть в самом конце списка)
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('@/views/NotFoundView.vue'),
     },
   ],
 })
