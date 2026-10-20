@@ -43,6 +43,12 @@ const router = createRouter({
       name: 'profile',
       component: () => import('@/views/ProfileView.vue'),
     },
+    // Кабинет преподавателя
+    {
+      path: '/teacher/dashboard',
+      name: 'teacher-dashboard',
+      component: () => import('@/views/teacher/TeacherDashboardView.vue'),
+    },
     {
       path: '/403',
       name: 'forbidden',
