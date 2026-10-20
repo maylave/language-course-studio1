@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
-import DashboardLayout from '@/layouts/DashboardLayout.vue'
+import DashboardLayout from '@/components/layout/DashboardLayout.vue'
 
 const authStore = useAuthStore()
 const { user, userRoleLabel } = storeToRefs(authStore)
