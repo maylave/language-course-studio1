@@ -98,6 +98,12 @@ const router = createRouter({
       component: () => import('@/views/ProfileView.vue'),
       meta: { requiresAuth: true },
     },
+    // Кабинет преподавателя
+    {
+      path: '/teacher/dashboard',
+      name: 'teacher-dashboard',
+      component: () => import('@/views/teacher/TeacherDashboardView.vue'),
+    },
     {
       path: '/test',
       name: 'test',
